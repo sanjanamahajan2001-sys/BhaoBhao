@@ -13,9 +13,8 @@ function Home() {
       <Navbar />
       
       {/* 🚀 Recruiter Demo Gateway Header */}
-      <div style={{
-        margin: '100px auto 0 auto', // Pushes it below the sticky navbar!
-        maxWidth: '1200px',
+      <div className="container" style={{
+        marginTop: '120px', // Pushes it below the sticky navbar!
         padding: '0 20px',
         boxSizing: 'border-box'
       }}>
@@ -52,30 +51,15 @@ function Home() {
             textAlign: 'center',
             zIndex: 1
           }}>
-            <span style={{
-              alignSelf: 'center',
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '4px 14px',
-              borderRadius: '9999px',
-              fontSize: '11px',
-              fontWeight: '700',
-              backgroundColor: 'rgba(196, 167, 125, 0.15)',
-              color: '#C4A77D', // Custom BhaoBhao gold text
-              border: '1px solid rgba(196, 167, 125, 0.3)',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase'
-            }}>
-              ✨ Recruiter Sandbox Mode
-            </span>
             <h3 style={{
               margin: 0,
-              fontSize: '22px',
+              fontSize: '24px',
               fontWeight: '800',
-              color: '#ffffff',
-              letterSpacing: '-0.02em'
+              color: '#C4A77D', // Custom BhaoBhao gold text
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase'
             }}>
-              One-Click Quick-Demo Gateway
+              ✨ Recruiter Sandbox Mode ✨
             </h3>
             <p style={{
               margin: 0,
@@ -98,7 +82,7 @@ function Home() {
           }}>
             {/* Customer Portal */}
             <a
-              href={import.meta.env.VITE_CUSTOMER_PORTAL_URL || "https://bhaobhao-customer.vercel.app"}
+              href={import.meta.env.VITE_CUSTOMER_PORTAL_URL ? `${import.meta.env.VITE_CUSTOMER_PORTAL_URL}/booking` : "https://bhaobhao-customer.vercel.app/booking"}
               target="_blank"
               rel="noopener noreferrer"
               style={{
