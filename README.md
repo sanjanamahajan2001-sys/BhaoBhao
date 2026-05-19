@@ -1,125 +1,133 @@
-# BhaoBhao — On-Demand Pet Grooming Platform
+# BhaoBhao — Enterprise-Grade Monorepo Pet Services Platform
 
-BhaoBhao is a production-grade, highly scalable multi-portal platform designed for booking and managing professional, on-demand pet grooming services. It comprises five core services operating in a decoupled, microservices-adjacent architecture, serving customers, service providers (groomers), and operational administrators.
+BhaoBhao is a production-grade, highly scalable multi-portal SaaS platform designed for scheduling, routing, and auditing professional, in-home pet grooming services. It comprises five core applications operating in a decoupled, microservices-adjacent monorepo architecture, catering to customers, service providers (groomers), and operational administrators.
 
-This project showcases professional **Full Stack Engineering** coupled with enterprise-level **DevOps Practices**, featuring high-performance React frontends, a robust relational schema with Drizzle ORM, secure token-based authentication, persistent background cron schedulers, and zero-downtime multi-server hosting topologies.
+This repository demonstrates **Full-Stack Engineering** coupled with professional **Cloud DevOps Practices**, featuring high-performance React SPAs, a structured relational schema managed with Drizzle ORM, secure token-based authentication, persistent background cron daemons, and zero-downtime multi-server hosting topologies.
 
 ---
 
-## 🏗️ Dual-Hosting Architectures
+## 🏗️ System Architecture & Data Flow
 
-To demonstrate both **enterprise-scale cloud infrastructure** and **modern, cost-effective serverless delivery**, BhaoBhao is designed to document a high-availability production topology alongside a fully functional, live-running portfolio demonstration.
+Below is the dynamic system architecture diagram showing the micro-frontend monorepo structure, dynamic routing gateways, Express API orchestrator, and secure database layers:
+
+```mermaid
+graph TD
+    %% Styling Definitions
+    classDef client fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef gateway fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#fff;
+    classDef backend fill:#312e81,stroke:#a855f7,stroke-width:2px,color:#fff;
+    classDef db fill:#064e3b,stroke:#059669,stroke-width:2px,color:#fff;
+    classDef external fill:#1e293b,stroke:#475569,stroke-width:1px,color:#94a3b8;
+
+    %% Nodes
+    A[Public Landing Page<br/>bhao-bhao.vercel.app]:::client
+    B[Customer Portal<br/>bhaobhao-customer.vercel.app]:::client
+    C[Groomer Portal<br/>bhaobhao-groomer.vercel.app]:::client
+    D[Admin Portal<br/>bhaobhao-admin.vercel.app]:::client
+
+    G[Recruiter Gateway Header<br/>One-Click Demo Router]:::gateway
+
+    H[Node.js Express API Server<br/>Render Container]:::backend
+    I[node-cron Background Daemon]:::backend
+
+    J[(Neon Serverless PostgreSQL)]:::db
+    K[Drizzle Database Schema]:::db
+
+    L[Mailgun OTP Engine]:::external
+    M[Supabase S3 Assets]:::external
+
+    %% Connections
+    A -->|Includes| G
+    G -->|Launches| B
+    G -->|Launches| C
+    G -->|Launches| D
+
+    B -->|REST Requests + JWT| H
+    C -->|REST Requests + JWT| H
+    D -->|REST Requests + JWT| H
+
+    H -->|Query & Schema Migrations| J
+    J -->|Backed by| K
+
+    H -->|Email Verification| L
+    H -->|Image Caching| M
+    H -->|Schedules| I
+```
+
+---
+
+## 🔐 Recruiter Sandbox Mode & Evaluation Guide
+
+To allow recruiters, hiring managers, and portfolio evaluators to thoroughly explore the platform in under **30 seconds** without requiring SMS API costs or active email integrations, a robust **`PORTFOLIO_DEMO_MODE`** flag is built directly into the core controllers.
+
+### 🌟 Quick-Bypass Sandbox Credentials
+You can evaluate all three custom portals instantly with zero setup:
+
+| Portal | URL | Demo Login Credentials | Dynamic Interceptions |
+|---|---|---|---|
+| **👤 Public Site** | `https://bhao-bhao.vercel.app` | *Explore the Gateway at the very top!* | N/A |
+| **👤 Customer Portal** | `https://bhaobhao-customer.vercel.app/booking` | Enter your own mobile/email ➡️ OTP: **`123456`** | Auto-authenticates and navigates right to Booking! |
+| **✂️ Groomer Portal** | `https://bhaobhao-groomer.vercel.app` | Phone: **`9663176108`** (John Doe) ➡️ OTP: **`123456`** | Displays active scheduled booking cards and live dashboard counts! |
+| **⚙️ Admin Portal** | `https://bhaobhao-admin.vercel.app` | Username: **`admin`** ➡️ Password: **`admin`** | Provides full database control, pet listings, and service approvals! |
+
+---
+
+## 🏗️ Dual-Hosting Topologies
+
+The codebase is engineered to support dual target environments, showing both **production-grade enterprise networks** and **cost-effective live portfolio hosting**:
 
 ### 1. Enterprise Production Topology (AWS + Nginx + PM2)
-
-In the real-world production setup, BhaoBhao is hosted on a secured cloud network engineered for low latency, secure data transit, and high availability.
-
-```
-                    ┌──────────────────────────────────────────────┐
-                    │            Route 53 DNS Resolution           │
-                    └──────────────────────┬───────────────────────┘
-                                           │
-                                       HTTPS (443)
-                                           │
-                                           ▼
-                    ┌──────────────────────────────────────────────┐
-                    │        Application Load Balancer (ALB)       │
-                    └──────────────────────┬───────────────────────┘
-                                           │
-                                       HTTP (80/443)
-                                           │
-                                           ▼
-            ┌──────────────────────────────────────────────────────────────┐
-            │          AWS EC2 Instance (Ubuntu 24.04 LTS)                │
-            │                                                              │
-            │   ┌──────────────────────────────────────────────────────┐   │
-            │   │              Nginx Web Server / Reverse Proxy        │   │
-            │   └────────┬──────────────────┬──────────────────┬───────┘   │
-            │            │                  │                  │           │
-            │       Proxy Pass          Proxy Pass          Static         │
-            │      (Port 5000)         (Port 3000)        File Serve       │
-            │            │                  │                  │           │
-            │            ▼                  ▼                  ▼           │
-            │   ┌─────────────────┐ ┌───────────────┐ ┌────────────────┐   │
-            │   │  PM2 Process    │ │  Vite/React   │ │  Public Upload │   │
-            │   │  Daemon         │ │  Groomer &  │ │  Assets        │   │
-            │   │  (API Backend)  │ │  Admin Apps │ │  (Multer)      │   │
-            │   └────────┬────────┘ └───────────────┘ └────────────────┘   │
-            │            │                                                 │
-            └────────────┼─────────────────────────────────────────────────┘
-                         │
-                      TCP (5432) [Secure VPC Peering]
-                         │
-                         ▼
-            ┌──────────────────────────────────────────────────────────────┐
-            │         AWS RDS PostgreSQL Managed Database Instance         │
-            └──────────────────────────────────────────────────────────────┘
-```
-
-#### DevOps Highlights of AWS Architecture:
-*   **Reverse Proxy & SSL**: A centralized **Nginx** server terminates SSL/TLS certificates generated via Let's Encrypt, managing HTTP-to-HTTPS redirection, and serving static SPA assets directly from the disk for near-zero latency.
+In the real-world production setup, BhaoBhao is hosted on a secured cloud network engineered for low latency, secure data transit, and high availability:
+*   **Reverse Proxy & SSL Termination**: A centralized **Nginx** server terminates SSL/TLS certificates generated via Let's Encrypt, managing HTTP-to-HTTPS redirection, serving static SPA assets directly from the disk for near-zero latency, and proxying active web sockets.
 *   **Daemon Process Management**: The Node.js Express server is managed using **PM2** in cluster mode, ensuring automatic restarts on failure, CPU core utilization, log rotation, and zero-downtime hot-reloads (`pm2 reload`).
 *   **Stateful Cron Scheduling**: A persistent daemon is required because the backend executes stateful background services (using `node-cron`) to run regular database cleanup, process expired reservation slots, and trigger booking reminders.
-*   **Media Pipeline**: Dynamic multipart/form uploads are handled securely through `multer` disk storage and mapped to static caching layers.
-
----
 
 ### 2. Live Portfolio Demo Topology (Vercel + Render + Neon)
-
-To provide recruiters with an instantly verifiable, zero-maintenance live demonstration without running active EC2 billing, the project is structured to deploy smoothly on serverless and PaaS edge infrastructure.
-
-```
- ┌─────────────────────────────────────────────────────────────────────────────────┐
- │                                 Vercel Edge CDN                                 │
- │                                                                                 │
- │  ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐ ┌─────────────┐  │
- │  │ frontend (Client)│ │ frontend_landing │ │  frontend_admin  │ │  frontend_  │  │
- │  │   Vite/React     │ │    Vite/React    │ │    Vite/React    │ │   groomer   │  │
- │  └────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘ └──────┬──────┘  │
- └───────────┼────────────────────┼────────────────────┼──────────────────┼────────┘
-             │                    │                    │                  │
-             └────────────────────┴──────────┬─────────┴──────────────────┘
-                                             │
-                                         REST / JSON
-                                             │
-                                             ▼
-                 ┌──────────────────────────────────────────────────────┐
-                 │       Render / Railway Persistent Cloud Server       │
-                 │   - Persistent Node.js container hosting Express     │
-                 │   - Keeps Cron Daemon (bookingReminders.js) active   │
-                 │   - Handles dynamic file-system upload routes        │
-                 └──────────────────────────┬───────────────────────────┘
-                                            │
-                                        Drizzle ORM
-                                            │
-                                            ▼
-                 ┌──────────────────────────────────────────────────────┐
-                 │       Neon.tech Serverless PostgreSQL Database       │
-                 │   - Relational store with instant branch migrations  │
-                 └──────────────────────────────────────────────────────┘
-```
-
-#### DevOps Highlights of Portfolio Architecture:
-*   **Multi-Workspace Edge Deployment**: Frontends are configured using Vercel's **Root Directory** monorepo workspace configuration. This enables separate build steps, deployment previews, and isolated environment variables for all four clients.
-*   **Dynamic persistent server**: The backend is hosted on Render/Railway as a persistent Docker container. This ensures that background cron schedulers (`node-cron`) remain continuously operational and do not shut down (which would happen under standard stateless serverless environments like Vercel Functions).
+To deliver an instantly verifiable, zero-maintenance live demonstration without running active EC2 billing, the project is structured to deploy smoothly on serverless and PaaS edge networks:
+*   **Vercel Monorepo Hooks**: Each frontend SPA is configured using Vercel's **Root Directory** workspace configuration. This enables separate build steps, deployment previews, and isolated environment variables for all four clients.
+*   **Express API Container on Render**: The backend is hosted on Render as a persistent web service. This ensures that background cron schedulers (`node-cron`) remain continuously operational and do not shut down (which would happen under standard stateless serverless environments like Vercel Functions).
 *   **Serverless SQL Database**: Managed PostgreSQL via **Neon.tech**, providing low latency, automated connection pooling, and 100% compatibility with Drizzle ORM pushing.
 
 ---
 
-## 🔐 Recruiter Demo Mode & OTP Bypass
+## 🛠️ Advanced DevOps & Engineering Enhancements
 
-To allow recruiters, hiring managers, and portfolio visitors to seamlessly test the entire platform without incurring SMS API fees or Mailgun charges, a robust **`PORTFOLIO_DEMO_MODE`** flag is built into the backend controller logic.
+The codebase contains several production-level architectural configurations:
 
-### How the Bypass Works (100% DB and Data Safe):
-1.  **Environment Flag**: Setting `PORTFOLIO_DEMO_MODE=true` in `backend/.env` tells the Node engine to activate virtual OTP interception.
-2.  **Challenge Generation Bypass**: When a customer or groomer requests an OTP (via SMS `/auth/sms_sendOTP` or Email `/auth/mailgun_sendOTP`), the system:
-    *   Logs the request directly to the terminal: `[DEMO MODE] Intercepted OTP challenge. Use OTP: 123456`.
-    *   Inserts a valid challenge entry directly into the PostgreSQL database using a static hash of the code `123456` to preserve schema constraints and tracking history.
-    *   Bypasses Mailgun and RML Connect SMS APIs entirely, avoiding bills and missing key errors.
-3.  **Verification Bypass**:
-    *   During verification, entering **`123456`** immediately resolves as success. The system updates the DB challenge record as consumed, signs a valid JWT token, and logs the user into their respective dashboard.
-4.  **UI Hints**:
-    *   Both the Client Customer and Groomer Portals dynamically display responsive Tailwind info banners when in demo mode, instructing visitors to use the code **`123456`** to log in instantly.
+### 1. Self-Healing DevOps API Middleware
+To eliminate environment mismatches across Render and local dev spaces, the backend's API middleware ([verifyApiKey.js](backend/middlewares/verifyApiKey.js)) features a self-healing fallback that checks both `API_KEYS` and `API_KEY` (singular) automatically:
+```javascript
+const verifyApiKey = (req, res, next) => {
+  const incomingKey = req.headers['x-api-key'];
+  const configuredKeys = process.env.API_KEYS || process.env.API_KEY;
+  
+  if (!incomingKey || !configuredKeys?.includes(incomingKey)) {
+    return res.status(403).json({ error: "Access Denied: Invalid API Key" });
+  }
+  next();
+};
+```
+
+### 2. SPA Routing Rewrite Configurations (`vercel.json`)
+To prevent client-side React Router navigation from breaking (throwing 404s on page refresh) on Vercel, each frontend workspace features a unified router rewrite rule mapping all routes cleanly to `/index.html`:
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+```
+
+### 3. Analytics Controller Bypass in Demo Mode
+To ensure recruiters see fully populated statistics on the Groomer Dashboard (even with mock data), the analytics compiler in [backend/controllers/analytics.js](backend/controllers/analytics.js) dynamically ignores the strict `groomer_id` constraint when in `PORTFOLIO_DEMO_MODE === "true"`, dynamically matching the dashboard cards count to **`6`** automatically:
+```javascript
+const groomerIdCondition = process.env.PORTFOLIO_DEMO_MODE === 'true' 
+  ? sql`1=1` 
+  : eq(bookings.groomerId, groomerId);
+```
+
+### 4. Dynamic Auto-Complete Breeds API
+Rather than serving static front-end assets, pet registrations on the customer app dynamically query `/breeds/popular` directly from the Neon PostgreSQL database through Drizzle's dynamic relational schema.
 
 ---
 
@@ -127,7 +135,6 @@ To allow recruiters, hiring managers, and portfolio visitors to seamlessly test 
 
 ### 1. Nginx Reverse Proxy Configuration (`/etc/nginx/sites-available/bhaobhao`)
 This production file serves static React SPA assets, forwards uploads directly, maps reverse proxies, and enforces SSL headers.
-
 ```nginx
 # Redirect HTTP to HTTPS
 server {
@@ -179,7 +186,6 @@ server {
 
 ### 2. PM2 Ecosystem Configuration (`ecosystem.config.json`)
 Allows multi-core node cluster management, custom environment injection, logs grouping, and automated clustering.
-
 ```json
 {
   "apps": [
@@ -203,7 +209,7 @@ Allows multi-core node cluster management, custom environment injection, logs gr
 
 ---
 
-## 📂 Environment variables Reference
+## 📂 Environment Variables Reference
 
 ### Backend API Variables (`backend/.env`)
 | Key | Example Value | Description |
@@ -212,14 +218,12 @@ Allows multi-core node cluster management, custom environment injection, logs gr
 | `PORTFOLIO_DEMO_MODE` | `true` | Set to `true` to activate dummy OTP bypass (`123456`) |
 | `APP_PORT` | `5000` | Localport the backend API server binds to |
 | `JWT_SECRET` | `71GPZZmnf9iwgCvaq54ijRlT6vRa5I...` | Secure signing key for customer/groomer JWT tokens |
-| `ADMIN_ID` | `admin` | Hashed admin credential username |
-| `ADMIN_PASSWORD_HASH` | `$2b$10$WoxS8NkRIdZgeY...` | Hashed bcrypt password for Admin login portal |
 | `API_KEYS` | `89dfa480a72e611280022f968e162155_...` | Comma-separated client application validation keys |
 
 ### Frontend Variables (`frontend/.env`)
 | Key | Example Value | Description |
 |---|---|---|
-| `VITE_API_BASE_URL` | `https://api.yourdomain.com/` | URL of the hosted backend Express API instance |
+| `VITE_API_BASE_URL` | `https://bhaobhao-backend.onrender.com/` | URL of the hosted backend Express API instance |
 | `VITE_API_KEY` | `89dfa480a72e611280022f968e162155_...` | API Validation key matching backend's `API_KEYS` |
 
 ---
@@ -257,5 +261,5 @@ Follow these sequential steps to move the project to Neon and deploy onto PaaS c
 3.  For each project, configure:
     *   **Framework Preset**: Vite
     *   **Root Directory**: Set to the corresponding folder (e.g. `frontend` or `frontend_groomer`).
-    *   **Environment Variables**: Inject `VITE_API_BASE_URL` pointing to your hosted Render backend (e.g. `https://bhaobhao-backend.onrender.com/`).
+    *   **Environment Variables**: Inject `VITE_API_BASE_URL` pointing to your hosted Render backend.
 4.  Deploy! Vercel will distribute static SPAs globally on their edge network.
