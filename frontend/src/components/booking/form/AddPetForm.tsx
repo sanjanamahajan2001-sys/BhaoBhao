@@ -175,7 +175,7 @@ const AddPetForm: React.FC<AddPetFormProps> = ({
     const fetchPopularBreeds = async () => {
       try {
         const response = await axiosInstance.get(
-          'https://api.bhaobhao.in/api/breeds/popular'
+          '/breeds/popular'
         );
         const data = response.data || [];
 

@@ -121,6 +121,14 @@ class AnalyticsController {
         return res.status(401).json({ message: "Unauthorized: Groomer ID missing" });
       }
 
+      // Check if demo mode is active
+      const isDemoMode = process.env.PORTFOLIO_DEMO_MODE === "true";
+      const conditions = [eq(BookingsModel.delete, false)];
+      
+      if (!isDemoMode) {
+        conditions.push(eq(BookingsModel.groomer_id, groomerId));
+      }
+
       // Status-wise counters for this groomer
       const statusCounters = await db
         .select({
@@ -128,9 +136,7 @@ class AnalyticsController {
           count: sql`count(*)`,
         })
         .from(BookingsModel)
-        .where(
-          and(eq(BookingsModel.delete, false), eq(BookingsModel.groomer_id, groomerId))
-        )
+        .where(and(...conditions))
         .groupBy(BookingsModel.status);
 
       // Initialize with 0
@@ -143,9 +149,7 @@ class AnalyticsController {
       const [{ total }] = await db
         .select({ total: sql`count(*)` })
         .from(BookingsModel)
-        .where(
-          and(eq(BookingsModel.delete, false), eq(BookingsModel.groomer_id, groomerId))
-        );
+        .where(and(...conditions));
 
       return res.status(200).json({
         counters: {

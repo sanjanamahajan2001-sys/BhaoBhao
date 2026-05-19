@@ -213,7 +213,7 @@ const Home: React.FC = () => {
             </button>
             
             <a
-              href={import.meta.env.VITE_GROOMER_PORTAL_URL || "http://localhost:3333"}
+              href={import.meta.env.VITE_GROOMER_PORTAL_URL || "https://bhaobhao-groomer.vercel.app"}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95"
@@ -223,7 +223,7 @@ const Home: React.FC = () => {
             </a>
             
             <a
-              href={import.meta.env.VITE_ADMIN_PORTAL_URL || "http://localhost:2222"}
+              href={import.meta.env.VITE_ADMIN_PORTAL_URL || "https://bhaobhao-admin.vercel.app"}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 px-5 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-purple-500/20 active:scale-95"

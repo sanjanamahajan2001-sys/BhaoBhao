@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 import MinimalLayout from './components/MinimalLayout';
 
 import Auth from './pages/Auth';
+import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Booking from './pages/Booking';
 import BookingHistory from './pages/BookingHistory';
@@ -34,12 +35,14 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <BookingProvider>
-            {/* IMPORTANT: ensures /auth/... refresh works */}
-            <Router basename="/auth">
+            <Router>
               <div className="App">
                 <Routes>
+                  {/* LANDING PAGE */}
+                  <Route path="/" element={<Home />} />
+
                   {/* LOGIN */}
-                  <Route path="/" element={<Auth />} />
+                  <Route path="/auth" element={<Auth />} />
 
                   {/* COMPLETE PROFILE */}
                   <Route
