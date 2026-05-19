@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+  const customerPortalUrl = import.meta.env.VITE_CUSTOMER_PORTAL_URL || "https://bhaobhao-customer.vercel.app";
   return (
     <footer className="site-footer">
       <div className="footer-container">
@@ -26,7 +27,7 @@ const Footer = () => {
             <h3>Services</h3>
             <ul>
               {/* <li><a href="#">Dog Walking</a></li> */}
-              <li><a href="https://app.bhaobhao.in/auth/login">Pet Grooming</a></li>
+              <li><a href={`${customerPortalUrl}/auth`}>Pet Grooming</a></li>
               {/* <li><a href="#">Pet Boarding</a></li>
               <li><a href="#">Veterinary Care</a></li> */}
             </ul>

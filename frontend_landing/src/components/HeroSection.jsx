@@ -8,7 +8,9 @@ const HeroSection = () => {
 
   // Helper function to get app URL (uses relative path for production)
   const getAppUrl = (path = '') => {
-    return `/auth${path}`;
+    const baseUrl = import.meta.env.VITE_CUSTOMER_PORTAL_URL || "https://bhaobhao-customer.vercel.app";
+    const finalPath = path === '/' ? '/auth' : path;
+    return `${baseUrl}${finalPath}`;
   };
 
   useEffect(() => {

@@ -183,57 +183,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 🚀 Recruiter Demo Gateway Header */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-2 border-indigo-500/30 rounded-3xl p-6 shadow-2xl overflow-hidden group">
-        {/* Animated glow */}
-        <div className="absolute inset-0 bg-indigo-500/5 opacity-50 blur-xl group-hover:opacity-80 transition-opacity"></div>
-        
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              ✨ Recruiter Sandbox Mode
-            </span>
-            <h3 className="text-xl font-bold text-white tracking-tight">
-              One-Click Quick-Demo Gateway
-            </h3>
-            <p className="text-xs sm:text-sm text-indigo-200/70 max-w-xl">
-              Explore the entire multi-portal full-stack ecosystem instantly. Select a role below to launch the respective portal in a new tab:
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => {
-                navigate('/booking');
-              }}
-              className="flex items-center space-x-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"
-            >
-              <User className="w-4 h-4" />
-              <span>👤 Customer Portal</span>
-            </button>
-            
-            <a
-              href={import.meta.env.VITE_GROOMER_PORTAL_URL || "https://bhaobhao-groomer.vercel.app"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95"
-            >
-              <Scissors className="w-4 h-4" />
-              <span>✂️ Groomer Portal</span>
-            </a>
-            
-            <a
-              href={import.meta.env.VITE_ADMIN_PORTAL_URL || "https://bhaobhao-admin.vercel.app"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-5 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-purple-500/20 active:scale-95"
-            >
-              <Shield className="w-4 h-4" />
-              <span>⚙️ Admin Portal</span>
-            </a>
-          </div>
-        </div>
-      </div>
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-3xl"></div>
