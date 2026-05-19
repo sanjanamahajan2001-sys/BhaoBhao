@@ -1,0 +1,31 @@
+import { pgTable, serial, integer, text, boolean, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const bookings = pgTable("bookings", {
+  id: serial("id").primaryKey(),
+  customer_id: integer("customer_id").notNull(),
+  pet_id: integer("pet_id").notNull(),
+  service_id: integer("service_id").notNull(),
+  groomer_id: integer("groomer_id"),
+  address_id: integer("address_id").notNull(),
+  pet_size: text("pet_size"),
+  appointment_time_slot: timestamp("appointment_time_slot", { withTimezone: true }).notNull(),
+  start_otp: text("start_otp"),
+  end_otp: text("end_otp"),
+  amount: doublePrecision("amount").notNull(),
+  status: text("status").default("Scheduled").notNull(),
+  notes: text("notes"),
+  delete: boolean("delete").default(false).notNull(),
+  deletedat: timestamp("deletedat", { withTimezone: true }),
+  sync: boolean("sync").default(false).notNull(),
+  createdat: timestamp("createdat", { withTimezone: true }).defaultNow(),
+  updatedat: timestamp("updatedat", { withTimezone: true }).defaultNow(),
+  order_id: text("order_id"),
+  tax: doublePrecision("tax"),
+  total: doublePrecision("total"),
+  payment_method: text("payment_method"),
+  service_pricing_id: integer("service_pricing_id"),
+  start_time: timestamp("start_time", { withTimezone: true }),
+  end_time: timestamp("end_time", { withTimezone: true }),
+  addon_service_ids: jsonb("addon_service_ids").default(sql`'[]'::jsonb`),
+});

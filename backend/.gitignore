@@ -1,0 +1,7 @@
+node_modules/
+
+public/uploads/profilePics/*
+public/uploads/petPics/*
+public/uploads/groomerPics/*
+
+drizzle/

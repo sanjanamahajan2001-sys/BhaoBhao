@@ -1,0 +1,25 @@
+Below trigger is to make sure there is only 1 isDefault in addresses table
+
+
+
+-- Step 1: Create the trigger function
+CREATE OR REPLACE FUNCTION enforce_single_default()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW."isDefault" = true THEN
+        UPDATE addresses
+        SET "isDefault" = false
+        WHERE customer_id = NEW.customer_id AND id <> NEW.id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Step 2: Create the trigger
+DROP TRIGGER IF EXISTS single_default_trigger ON addresses;
+
+CREATE TRIGGER single_default_trigger
+AFTER INSERT OR UPDATE ON addresses
+FOR EACH ROW
+EXECUTE FUNCTION enforce_single_default();
