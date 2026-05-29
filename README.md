@@ -71,6 +71,11 @@ You can evaluate all three custom portals instantly with zero setup:
 | **⚙️ Admin Portal** | `https://bhaobhao-admin.vercel.app` | Username: **`admin`** ➡️ Password: **`admin`** | Provides full database control, pet listings, and service approvals! |
 
 ---
+<img width="1918" height="965" alt="image" src="https://github.com/user-attachments/assets/a1847ac5-85ac-44c5-9f66-a1c0e00ee97b" />
+<img width="1410" height="975" alt="image" src="https://github.com/user-attachments/assets/0d15d8bb-d64f-4ca2-9d4e-5c4d30628487" />
+<img width="1607" height="960" alt="image" src="https://github.com/user-attachments/assets/066ae1f7-7d2d-459d-96c0-c84a053f5c48" />
+<img width="1632" height="971" alt="image" src="https://github.com/user-attachments/assets/e2f178f8-cffa-40f4-90f3-7484d9e41803" />
+
 
 ## 🏗️ Dual-Hosting Topologies
 
